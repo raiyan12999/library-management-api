@@ -1,9 +1,10 @@
 # Library Management API
 
-This project is a **Library Management System API** developed using Django and Django REST Framework (DRF). It provides functionality for managing books, borrowing, and returning operations, with distinct permissions for administrators and general users.
+This project is a **Library Management System API** developed using Django and Django REST Framework (DRF). It provides functionality for managing books, borrowing, and returning operations, with distinct permissions for administrators and general users. JWT authentication is implemented for secure access control.
 
 ## Features
 
+- **JWT Authentication**: Secures API endpoints using JSON Web Tokens.
 - **User Authentication**: Supports user login and authentication using Django's built-in `User` model.
 - **Book Management**: CRUD operations for books with permissions.
   - Administrators can perform full CRUD operations.
@@ -21,9 +22,10 @@ This project is a **Library Management System API** developed using Django and D
 
 ## Requirements
 
-- Python 
-- Django 
+- Python
+- Django
 - Django REST Framework
+- djangorestframework-simplejwt
 
 ## Installation
 
@@ -90,8 +92,8 @@ Methods:
 ## API Endpoints
 
 ### Authentication
-- `/api/auth/login/`: User login.
-- `/api/auth/logout/`: User logout.
+- `/api/token/`: Obtain a JWT token.
+- `/api/token/refresh/`: Refresh an existing JWT token.
 
 ### Books
 - `GET /books/`: List all books.
@@ -129,11 +131,26 @@ Overdue fines are calculated at **BDT 5 per day** beyond the return deadline. Th
 
 ## Example Usage
 
+### Obtain JWT Token
+```bash
+POST /api/token/
+Body:
+{
+  "username": "john_doe",
+  "password": "password123"
+}
+Response:
+{
+  "access": "<your_access_token>",
+  "refresh": "<your_refresh_token>"
+}
+```
+
 ### Borrow a Book
 ```bash
 POST /borrowed/{book_id}/borrow/
 Headers:
-  Authorization: Token <your_token>
+  Authorization: Bearer <your_access_token>
 Response:
 {
   "id": 1,
@@ -157,14 +174,13 @@ Response:
 ```bash
 POST /borrowed/{book_id}/return_book/
 Headers:
-  Authorization: Token <your_token>
+  Authorization: Bearer <your_access_token>
 Response:
 {
   "message": "Book \"Learn Python\" returned successfully.",
   "fine": 10
 }
 ```
-
 
 ## Contact
 
